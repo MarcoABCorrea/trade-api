@@ -1,15 +1,13 @@
 import * as express from "express";
+import { NextFunction, Request, Response } from "express";
 import * as _ from "lodash";
-import {NextFunction, Request, Response} from "express";
-import {Helpers} from "../helpers/Helpers";
-import {mongoURI} from "../configs/Mongo";
-import {MongoClient} from 'mongodb';
-import {databaseName} from "../configs/Mongo";
+import { MongoClient } from 'mongodb';
+import { mongoURI } from "../configs/Mongo";
+import { Helpers } from "../helpers/Helpers";
 
 class TradeRoutes {
 
 	app: express.Application;
-	collectionName: string;
 	route: string;
 
 	constructor() {
@@ -57,10 +55,12 @@ class TradeRoutes {
 	private getWithUserId(): void {
 		this.app.get(`/${this.route}/users/:id`, (req: Request, res: Response, next: NextFunction) => {
 
+			req.query.embed = 'user';
+
 			if (!_.isEmpty(req.params.id)) {
 				MongoClient.connect(mongoURI, (connError, dbConnection) => {
 
-					Helpers._fetchById(dbConnection, 'trades', req.params.id, 'users')
+					Helpers._fetchAll(dbConnection, 'trades', req.query, req.params.id)
 						.then((result) => {
 							res.status(200).send({payload: result});
 							dbConnection.close();
@@ -79,19 +79,7 @@ class TradeRoutes {
 		this.app.delete(`/erase`, (req: Request, res: Response) => {
 			MongoClient.connect(mongoURI, (connError, dbConnection) => {
 
-				new Promise((resolve, reject) => {
-					dbConnection.db(databaseName)
-						.collection(collectionName, this.fetchCollection)
-						.deleteOne({"_id": id}).then(
-						result => {
-							resolve(result);
-							dbConnection.close();
-						}, err => {
-							reject(err);
-							dbConnection.close();
-						})
-				});
-				Helpers._remove(dbConnection, this.collectionName, req.params.id)
+				Helpers._removeAll(dbConnection, 'trades')
 					.then((result) => {
 						res.status(200).send({payload: result});
 					}, (dataError) => {

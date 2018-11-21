@@ -1,5 +1,6 @@
 import QueryParameters from "../models/QueryParameters";
 import {databaseName} from "../configs/Mongo";
+import { ObjectId } from 'mongodb';
 
 export namespace Helpers {
 
@@ -12,8 +13,11 @@ export namespace Helpers {
 		!err ? console.log(`Collection ${result.s.name} found`) : console.error('Error while searching for collection! ', err);
 	}
 
-	export function _fetchAll(dbConnection, collectionName: string, queryParams: any) {
+	export function _fetchAll(dbConnection, collectionName: string, queryParams: any, id?: any) {
 		const options = Helpers.formatQueryParams(queryParams);
+		if (id) {
+			options.query.user = id;
+		}
 		const promise = new Promise((resolve, reject) => {
 			dbConnection.db(databaseName)
 				.collection(collectionName, this.fetchCollection)
@@ -34,51 +38,33 @@ export namespace Helpers {
 		if (options.embed === '') {
 			return promise;
 		} else {
-			return this._fetchAllEmbed(promise, dbConnection, options.embed);
+			return this._fetchAllEmbed(promise, dbConnection, options.embed, id);
 		}
 	}
 	
-	export function _fetchAllEmbed(promise, dbConnection, embed) {
+	export function _fetchAllEmbed(promise, dbConnection, embed, id) {
 		return new Promise((resolve) => {
-				promise.then((resAll) => {
-						let ids = [];
-						resAll.map((entity) => {
-							if (entity[embed] instanceof Array) {
-								ids.push(...entity[embed]);
-							}
-						});
-
-						const embedPromise = new Promise((resolve, reject) => {
-							dbConnection.db(databaseName)
-								.collection(embed, this.fetchCollection)
-								.find({"_id": {$in: ids}})
-								.toArray()
-								.then(
-									result => {
-										resolve(result);
-									}, err => {
-										reject(err);
-									});
-						});
-
-						embedPromise.then((response) => {
-							let responseEmbed = response as Array<any>;
-
-							resAll.map((entity) => {
-								if (entity[embed] instanceof Array) {
-									entity[embed] = responseEmbed.filter(function (e) {
-											return this.indexOf(e.id) > -1;
-										}, entity[embed]
-									);
-								}
+			promise.then((resAll) => {
+				const embedPromise = new Promise((resolve, reject) => {
+					dbConnection.db(databaseName)
+						.collection(embed, this.fetchCollection)
+						.findOne({"_id": new ObjectId(id)})
+						.then(
+							result => {
+								resolve(result);
+							}, err => {
+								reject(err);
 							});
+				});
 
-							resolve(resAll);
-						});
-					}
-				);
-			}
-		);
+				embedPromise.then((response) => {
+					resAll.map((entity) => {
+						entity[embed] = response;
+					});
+					resolve(resAll);
+				});
+			});
+		});
 	}
 
 	export function _fetchById(dbConnection, collectionName, id, embed?) {
@@ -164,6 +150,23 @@ export namespace Helpers {
 			dbConnection.db(databaseName)
 				.collection(collectionName, this.fetchCollection)
 				.deleteOne({"_id": id}).then(
+				result => {
+					resolve(result);
+					dbConnection.close();
+				}, err => {
+					reject(err);
+					dbConnection.close();
+				})
+		});
+
+	}
+
+	export function _removeAll(dbConnection, collectionName) {
+
+		return new Promise((resolve, reject) => {
+			dbConnection.db(databaseName)
+				.collection(collectionName, this.fetchCollection)
+				.remove({}).then(
 				result => {
 					resolve(result);
 					dbConnection.close();
