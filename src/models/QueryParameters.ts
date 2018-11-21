@@ -7,6 +7,8 @@ export default class QueryParameters {
 	asc?: string;
 	desc?: string;
 	embed?: string;
+	startDate?: any;
+	endDate?: any;
 
 	constructor() {
 		this.skip = 0;
@@ -16,6 +18,8 @@ export default class QueryParameters {
 		this.asc = '';
 		this.desc = '';
 		this.embed = '';
+		this.startDate = '';
+		this.endDate = '';
 	}
 
 	static describe(): Array<string> {
