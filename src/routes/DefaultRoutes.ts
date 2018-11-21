@@ -95,7 +95,7 @@ export default class DefaultRoutes {
 
 				})
 			} else {
-				res.status(500).send({message: 'Parametro id nao esta presente ou foi enviado incorretamente'});
+				res.status(500).send({message: 'There is no id!'});
 			}
 
 		});
@@ -116,7 +116,7 @@ export default class DefaultRoutes {
 
 				})
 			} else {
-				res.status(500).send({message: 'Parametro id nao esta presente ou foi enviado incorretamente'});
+				res.status(500).send({message: 'There is no id!'});
 			}
 
 		});
