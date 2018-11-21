@@ -1,0 +1,27 @@
+{
+	"name": "trade-api",
+	"version": "1.0.0",
+	"main": "index.js",
+	"engines": {
+		"node": "11.2.0"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "tsc && node dist/server.js",
+		"start-api": "forever start -d dist/server.js",
+		"stop-api": "forever stop dist/server.js",
+		"complie": "tsc"
+	},
+	"dependencies": {
+		"@types/body-parser": "^1.16.8",
+		"@types/lodash": "4.14.107",
+		"@types/mongodb": "^3.0.19",
+		"@types/node": "^9.6.5",
+		"body-parser": "1.18.2",
+		"express": "4.16.2",
+		"lodash": "4.17.10",
+		"moment": "^2.20.1",
+		"mongodb": "^3.0.0",
+		"rxjs": "5.5.10"
+	}
+}
