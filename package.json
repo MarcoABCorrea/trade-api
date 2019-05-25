@@ -1,28 +1,28 @@
 {
-	"name": "trade-api",
-	"version": "1.0.0",
-	"engines": {
-		"node": "11.2.0"
-	},
-	"scripts": {
-		"test": "./node_modules/.bin/mocha test",
-		"start": "tsc && node dist/server.js",
-		"start-api": "forever start -d dist/server.js",
-		"stop-api": "forever stop dist/server.js",
-		"complie": "tsc"
-	},
-	"dependencies": {
-		"@types/body-parser": "^1.16.8",
-		"@types/lodash": "4.14.107",
-		"@types/mongodb": "^3.0.19",
-		"@types/node": "^9.6.5",
-		"body-parser": "1.18.2",
-		"express": "4.16.2",
-		"lodash": "4.17.10",
-		"mocha": "^3.5.0",
-		"mocha-junit-reporter": "^1.13.0",
-		"mocha-multi-reporters": "^1.1.4",
-		"moment": "^2.20.1",
-		"mongodb": "^3.0.0"
-	}
+  "name": "trade-api",
+  "version": "1.0.0",
+  "engines": {
+    "node": "11.2.0"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha test",
+    "start": "tsc && node dist/server.js",
+    "start-api": "forever start -d dist/server.js",
+    "stop-api": "forever stop dist/server.js",
+    "complie": "tsc"
+  },
+  "dependencies": {
+    "@types/body-parser": "^1.16.8",
+    "@types/lodash": "4.14.107",
+    "@types/mongodb": "^3.0.19",
+    "@types/node": "^9.6.5",
+    "body-parser": "1.18.2",
+    "express": "4.16.2",
+    "lodash": "4.17.10",
+    "mocha": "^3.5.0",
+    "mocha-junit-reporter": "^1.13.0",
+    "mocha-multi-reporters": "^1.1.4",
+    "moment": "^2.20.1",
+    "mongodb": "^3.0.0"
+  }
 }
